@@ -1,32 +1,42 @@
 #include <iostream>
-#include <GL/freeglut.h>
+#include <GLFW/glfw3.h>
 
 using namespace std;
 
-static void RenderSceneCB()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-    glutSwapBuffers();
-}
 
-static void InitializeGlutCallbacks()
-{
-    glutDisplayFunc(RenderSceneCB);
-}
+int main(void){
 
-int main(int argc, char* argv[]){
+    GLFWwindow* window;
 
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowSize(1024, 768);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow("Tutorial1");
+    /* Initialize the library */
+    if (!glfwInit())
+        return -1;
 
-    InitializeGlutCallbacks();
+    /* Create a windowed mode window and its OpenGL context */
+    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    if (!window)
+    {
+        glfwTerminate();
+        return -1;
+    }
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    /* Make the window's context current */
+    glfwMakeContextCurrent(window);
 
-    glutMainLoop();
+    /* Loop until the user closes the window */
+    while (!glfwWindowShouldClose(window))
+    {
+        /* Render here */
+        glClear(GL_COLOR_BUFFER_BIT);
 
+        /* Swap front and back buffers */
+        glfwSwapBuffers(window);
+
+        /* Poll for and process events */
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+    
     return 0;
 }
