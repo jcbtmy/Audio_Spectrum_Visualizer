@@ -10,5 +10,7 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
+find_package(GLEW REQUIRED)
 
-target_link_libraries(${PROJECT_NAME} OpenGL::GL glfw)
+
+target_link_libraries(${PROJECT_NAME} OpenGL::GL glfw GLEW::GLEW)
