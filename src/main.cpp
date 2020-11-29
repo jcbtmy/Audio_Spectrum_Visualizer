@@ -3,28 +3,10 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <vector>
+#include "Shader.h"
 
 
 using namespace std;
-
-const char* get_vertex_shader (){
-    return "#version 460 core\n"
-           "layout(location = 0) in vec3 vp;"
-           "out vec4 vertexColor;"
-           "void main(){"
-           "   gl_Position = vec4(vp, 1.0);"
-           "   vertexColor = vec4(0.5, 0.0, 0.5, 1.0);"
-           "}"; 
-}
-
-const char* get_fragment_shader(){
-    return  "#version 460 core\n"
-            "out vec4 frag_color;"
-            "in vec4 vertexColor;"
-            "void main() {"
-            "   frag_color = vertexColor;"
-            "}";
-}
 
 
 struct ScreenDim {
@@ -87,53 +69,6 @@ static GLuint create_VAO(GLuint VBO){
 
 }
 
-static unsigned int create_shader(unsigned int shader_type, const char* source){
-
-    GLint Result = GL_FALSE;
-    int InfoLogLength;
-    unsigned int shader = glCreateShader(shader_type);
-    glShaderSource(shader, 1, &source, NULL);
-    glCompileShader(shader);
-
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &Result);
-	glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    if(InfoLogLength > 0){
-        vector<char> ShaderError(InfoLogLength + 1);
-        glGetShaderInfoLog(shader, InfoLogLength, NULL, &ShaderError[0]);
-        printf("%s\n", &ShaderError[0] );
-    }
-
-    return shader;
-}
-
-static GLuint create_program(){
-
-    GLuint vs, fs, shader_program;
-    GLint Result = GL_FALSE;
-	int InfoLogLength;
-    char const * gl_vertex_shader = get_vertex_shader();
-    char const * gl_fragment_shader = get_fragment_shader();
-    
-    vs = create_shader(GL_VERTEX_SHADER, gl_vertex_shader);
-    fs = create_shader(GL_FRAGMENT_SHADER, gl_fragment_shader);
-    
-
-    shader_program = glCreateProgram();
-    glAttachShader(shader_program, fs);
-    glAttachShader(shader_program, vs);
-    glLinkProgram(shader_program);
-
-    glGetProgramiv(shader_program, GL_LINK_STATUS, &Result);
-	glGetProgramiv(shader_program, GL_INFO_LOG_LENGTH, &InfoLogLength);
-	if ( InfoLogLength > 0 ){
-        vector<char> errMessage(InfoLogLength + 1);
-		glGetProgramInfoLog(shader_program, InfoLogLength, NULL, &errMessage[0]);
-        printf("%s\n", &errMessage[0]);
-	}
-
-    return shader_program;
-}
-
 static void full_screen(GLFWwindow* window, GLFWmonitor* monitor, ScreenDim* dims){
 
     static bool fullscreen = false;
@@ -157,10 +92,11 @@ static void full_screen(GLFWwindow* window, GLFWmonitor* monitor, ScreenDim* dim
 
 int main(void){
 
+    GLuint vbo, vao;
     GLFWwindow* window;
     GLFWmonitor* monitor;
     ScreenDim dims;
-    GLuint vbo, vao, shader_program;
+
 
     /* Initialize the library */
     if (!glfwInit())
@@ -185,7 +121,7 @@ int main(void){
     get_resolution(&(dims.width), &(dims.height), &(dims.refresh_rate));
     vbo = load_triangle();
     vao = create_VAO(vbo);
-    shader_program = create_program();
+    Shader shader("./shaders/vertex_shader.glsl", "./shaders/fragment_shader.glsl");
 
 
     /* Loop until the user closes the window */
@@ -195,7 +131,7 @@ int main(void){
         
         gray_screen();
 
-        glUseProgram(shader_program);
+        shader.use();
 
         glBindVertexArray(vao);
 
