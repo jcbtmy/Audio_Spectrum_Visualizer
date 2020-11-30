@@ -20,6 +20,11 @@ class Shape{
         unsigned int        getIndicesSize() {return (unsigned int)indices.size()*sizeof(unsigned int);}
         Shape();
 
+        void square(float step);
+        void cube(float step);
+        void addVertex(float, float, float);
+        void addIndex(unsigned int, unsigned int, unsigned int);
+
         void load();
         void draw();
 

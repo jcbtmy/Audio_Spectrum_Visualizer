@@ -3,30 +3,79 @@
 
 Shape::Shape()
 {
-    vertices.push_back(-0.5f);
-    vertices.push_back(-0.5f);
-    vertices.push_back(0.0f);
+    this->cube(0.5f);
+}
 
-    vertices.push_back(0.5f);
-    vertices.push_back(-0.5f);
-    vertices.push_back( 0.0f);
+void Shape::square(float step){
 
-    vertices.push_back(0.5f);
-    vertices.push_back(0.5f);
-    vertices.push_back(0.0f);
+    float x, y;
+    unsigned int i1, i2;
 
-    vertices.push_back(-0.5f);
-    vertices.push_back(0.5f);
-    vertices.push_back(0.0f);
+    for(int i = 0; i < 2; i++){
+        x = i - step;
+        i1 = i;
+        for(int j = 0; j < 2; j++){
+            i2 = i + 1;
+            y = j - step;
+            this->addVertex(x,y,0.f);
+        }
+        this->addIndex(i1, i2, i2 + 1);
+    }
 
-    indices.push_back(0);
-    indices.push_back(1);
-    indices.push_back(2);
+}
 
-    indices.push_back(0);
-    indices.push_back(2);
-    indices.push_back(3);
+void Shape::cube(float step)
+{
+    const int sides = 6;
+    float x,y,z;
+    unsigned int index_count;
+    unsigned int i1,i2,i3;
 
+    //x coordinates
+    for(int i = 0; i < 2; i++)
+    {
+        x = i - step;
+        //y coordinates
+        for(int j = 0; j < 2; j++)
+        {
+            y = j - step;
+            //z coordinates
+            for(int k = 0; k < 2; k++)
+            {
+                z = k - step;
+                this->addVertex(x,y,z);
+            }
+        }
+    }
+
+    for(int i = 0; i < sides; i++)
+    {
+        
+        this->addIndex(i, i + 1, i + 2);
+        if(i < 4)
+        {
+           ( i % 2 == 0) ? i2 = 1 : i2 = 2;  
+           this->addIndex(i, i + i2, i + 4);
+           this->addIndex(i, i + i2 + 1, i + 4);
+        }
+
+    }
+
+
+}
+
+void Shape::addVertex(float x, float y, float z)
+{
+    vertices.push_back(x);
+    vertices.push_back(y);
+    vertices.push_back(z);
+}
+
+void Shape::addIndex(unsigned int i1, unsigned int i2, unsigned int i3)
+{
+    indices.push_back(i1);
+    indices.push_back(i2);
+    indices.push_back(i3);
 }
 
 void Shape::load(){

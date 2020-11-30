@@ -30,10 +30,3 @@ int Window::isopen(){
 void Window::swap(){
     glfwSwapBuffers(window);
 }
-
-void Window::poll(){
-    glfwPollEvents();
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE)==GLFW_PRESS){
-        glfwSetWindowShouldClose(window, 1);
-    }
-}

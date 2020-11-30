@@ -15,9 +15,10 @@ class Window{
 
         Window(int width, int height, const char*);
 
+        GLFWwindow* getContext() {return window;}
         int isopen();
         void swap();
-        void poll();
+
 
 };
 
