@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "Sphere.h"
 #include "Shape.h"
+#include "Controller.h"
 
 
 using namespace std;
@@ -44,6 +45,7 @@ int main(void){
 
     /* Create a windowed mode window and its OpenGL context */
     Window window(1080, 720, "Hello World");
+    Controller controller(window.getContext());
 
     glewExperimental = GL_TRUE;
     glewInit();
@@ -53,6 +55,7 @@ int main(void){
 
     Shader shader("./shaders/vertex_shader.glsl", "./shaders/fragment_shader.glsl");
     Shape shape;
+
 
     glLineWidth(1.0f);
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -68,7 +71,8 @@ int main(void){
 
         shape.draw();
 
-        window.poll();
+        controller.handleEvents();
+
         window.swap();
 
     }

@@ -15,6 +15,8 @@ add_executable(${PROJECT_NAME} src/main.cpp
                                src/Window.h
                                src/Shape.cpp
                                src/Shape.h
+                               src/Controller.cpp
+                               src/Controller.h
                             )
 
 find_package(OpenGL REQUIRED)
