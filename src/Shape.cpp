@@ -1,9 +1,10 @@
 #include "Shape.h"
 
 
-Shape::Shape()
+Shape::Shape(unsigned int shader_program)
 {
     this->cube(0.5f);
+    shaderProgram = shader_program;
 }
 
 void Shape::square(float step){
@@ -48,18 +49,11 @@ void Shape::cube(float step)
         }
     }
 
-    for(int i = 0; i < sides; i++)
-    {
-        
+   for(int i = 0; i < 6; i++){
         this->addIndex(i, i + 1, i + 2);
-        if(i < 4)
-        {
-           ( i % 2 == 0) ? i2 = 1 : i2 = 2;  
-           this->addIndex(i, i + i2, i + 4);
-           this->addIndex(i, i + i2 + 1, i + 4);
-        }
-
-    }
+        this->addIndex(i, i + 2, i + 4);
+        (i % 2) ? this->addIndex(i, i + 3, i + 4) : this->addIndex(i, i + 1, i + 4);
+   }
 
 
 }
@@ -100,6 +94,12 @@ void Shape::load(){
                 this->getIndicesSize(),
                 this->getIndices(),
                 GL_STATIC_DRAW);
+
+
+
+
+    glUseProgram(shaderProgram);
+    t_start = std::chrono::high_resolution_clock::now();
 }
 
 void Shape::draw(){
@@ -107,4 +107,17 @@ void Shape::draw(){
                     (unsigned int) indices.size(), 
                     GL_UNSIGNED_INT, 
                     (void*)0);
+}
+
+void Shape::spin()
+{
+    
+    unsigned int uniTrans = glGetUniformLocation(shaderProgram, "trans");
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::rotate(
+        trans,
+        (float)glfwGetTime(),
+        glm::vec3(1.0f, 1.0f, 1.0f)
+    );
+    glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(trans));
 }

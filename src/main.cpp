@@ -29,7 +29,7 @@ void get_resolution(int* width, int* height, int* refresh_rate) {
 
 static void gray_screen() {
     glClearColor(0.25f, 0.25f, 0.25f, 0.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 
@@ -54,13 +54,17 @@ int main(void){
     get_resolution(&(dims.width), &(dims.height), &(dims.refresh_rate));
 
     Shader shader("./shaders/vertex_shader.glsl", "./shaders/fragment_shader.glsl");
-    Shape shape;
+    Shape shape(shader.programID);
 
 
-    glLineWidth(1.0f);
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    //glLineWidth(1.0f);
+    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    // Accept fragment if it closer to the camera than the former one
+    glEnable(GL_DEPTH_TEST);
+// Accept fragment if it closer to the camera than the former one
+    glDepthFunc(GL_LESS);
 
-    shader.use();
+
     shape.load();
     
     while (window.isopen())
@@ -68,7 +72,7 @@ int main(void){
         /* Render here */
         
         gray_screen();
-
+        shape.spin();
         shape.draw();
 
         controller.handleEvents();
