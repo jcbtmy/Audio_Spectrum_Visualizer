@@ -2,7 +2,6 @@
 #define SHAPE_H
 
 #include <vector>
-#include <chrono>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -14,17 +13,18 @@ class Shape{
 
     public:
 
-        std::chrono::system_clock::time_point t_start ;
         std::vector<float> vertices;
         std::vector<unsigned int> indices;
+        glm::mat4 trans = glm::mat4(1.0f);
         unsigned int shaderProgram;
         unsigned int uniTrans;
 
+
         float*        getVertices() {return vertices.data();}
-        unsigned int        getVerticesSize(){return (unsigned int)vertices.size() * sizeof(float);}
+        unsigned int  getVerticesSize(){return (unsigned int)vertices.size() * sizeof(float);}
 
         unsigned int* getIndices(){return indices.data();}
-        unsigned int        getIndicesSize() {return (unsigned int)indices.size()*sizeof(unsigned int);}
+        unsigned int  getIndicesSize() {return (unsigned int)indices.size()*sizeof(unsigned int);}
         Shape(unsigned int shader);
 
         void square(float step);
@@ -34,7 +34,7 @@ class Shape{
 
         void load();
         void draw();
-        void spin();
+        void spin(float* input, int speed);
 
 };  
 

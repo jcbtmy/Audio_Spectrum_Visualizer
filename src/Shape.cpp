@@ -49,11 +49,15 @@ void Shape::cube(float step)
         }
     }
 
+
    for(int i = 0; i < 6; i++){
-        this->addIndex(i, i + 1, i + 2);
-        this->addIndex(i, i + 2, i + 4);
-        (i % 2) ? this->addIndex(i, i + 3, i + 4) : this->addIndex(i, i + 1, i + 4);
-   }
+        if(i < 2 || i > 3 ) 
+            this->addIndex(i, i + 1, i + 2);
+        if(i < 4){
+            this->addIndex(i, i + 2, i + 4);
+            (i % 2) ? this->addIndex(i, i + 3, i + 4) : this->addIndex(i, i + 1, i + 4);
+        }
+   }    
 
 
 }
@@ -96,28 +100,26 @@ void Shape::load(){
                 GL_STATIC_DRAW);
 
 
-
-
     glUseProgram(shaderProgram);
-    t_start = std::chrono::high_resolution_clock::now();
+    uniTrans = glGetUniformLocation(shaderProgram, "trans");
+    
 }
 
 void Shape::draw(){
+
+    glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(trans));
     glDrawElements(GL_TRIANGLES, 
                     (unsigned int) indices.size(), 
                     GL_UNSIGNED_INT, 
                     (void*)0);
 }
 
-void Shape::spin()
+void Shape::spin(float* input, int speed)
 {
-    
-    unsigned int uniTrans = glGetUniformLocation(shaderProgram, "trans");
-    glm::mat4 trans = glm::mat4(1.0f);
+
     trans = glm::rotate(
         trans,
-        (float)glfwGetTime(),
-        glm::vec3(1.0f, 1.0f, 1.0f)
+        (float)glm::radians( 45.0 / (float)speed),
+        glm::vec3(input[0], input[1], input[2])
     );
-    glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(trans));
 }

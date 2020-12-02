@@ -57,7 +57,7 @@ int main(void){
     Shape shape(shader.programID);
 
 
-    //glLineWidth(1.0f);
+   //glLineWidth(1.0f);
     //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
     // Accept fragment if it closer to the camera than the former one
     glEnable(GL_DEPTH_TEST);
@@ -72,11 +72,13 @@ int main(void){
         /* Render here */
         
         gray_screen();
-        shape.spin();
+
+
+        if(controller.spinObject){
+            shape.spin(controller.getRotation(), dims.refresh_rate);
+        }
         shape.draw();
-
         controller.handleEvents();
-
         window.swap();
 
     }
