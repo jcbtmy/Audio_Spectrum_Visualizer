@@ -16,7 +16,7 @@ class Controller{
 
         GLFWwindow *window;
         Controller(GLFWwindow* context){ window = context;}
-        float* getRotation() {return &inputTransform[0];};
+        float* getRotation() {return (spinObject) ? &inputTransform[0] : nullptr;};
         void handleEvents();
         void updateTransform();
 };

@@ -1,10 +1,10 @@
 #include "Shape.h"
 
 
-Shape::Shape(unsigned int shader_program)
+Shape::Shape()
 {
     this->cube(0.5f);
-    shaderProgram = shader_program;
+    model = glm::mat4(1.0f);
 }
 
 void Shape::square(float step){
@@ -98,28 +98,46 @@ void Shape::load(){
                 this->getIndicesSize(),
                 this->getIndices(),
                 GL_STATIC_DRAW);
-
-
-    glUseProgram(shaderProgram);
-    uniTrans = glGetUniformLocation(shaderProgram, "trans");
     
+}
+
+void Shape::setUniform(unsigned int uni)
+{
+    uniform = uni;
 }
 
 void Shape::draw(){
 
-    glUniformMatrix4fv(uniTrans, 1, GL_FALSE, glm::value_ptr(trans));
+
+    glUniformMatrix4fv(uniform, 1, GL_FALSE, glm::value_ptr(model));
+
     glDrawElements(GL_TRIANGLES, 
                     (unsigned int) indices.size(), 
                     GL_UNSIGNED_INT, 
                     (void*)0);
 }
 
-void Shape::spin(float* input, int speed)
+void Shape::setRotation(float* input, int speed)
 {
+   if(!input)
+        return;
 
-    trans = glm::rotate(
-        trans,
-        (float)glm::radians( 45.0 / (float)speed),
-        glm::vec3(input[0], input[1], input[2])
-    );
+    float movement_speed = 1.0f / (float) speed;
+    glm::quat rotation =  glm::quat(glm::vec3(0,0,0));
+
+
+    if(input[0] != 0.0f)
+    {
+         rotation *= glm::angleAxis((movement_speed * input[0]), glm::vec3(1.0, 0.0f, 0.0f));
+    }
+    if(input[1] != 0.0f)
+    {
+         rotation  *= glm::angleAxis((movement_speed * input[1]), glm::vec3(0.0, 1.0f, 0.0f));
+    }
+     if(input[2] != 0.0f)
+    {
+        rotation *= glm::angleAxis((movement_speed * input[2]), glm::vec3(0.0, 0.0f, 1.0f));
+    }
+
+    model = glm::toMat4(rotation) * model;
 }

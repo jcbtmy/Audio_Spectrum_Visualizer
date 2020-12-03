@@ -1,4 +1,5 @@
 #include "Controller.h"
+#include <iostream>
 
 
 void Controller::handleEvents()
@@ -15,8 +16,11 @@ void Controller::updateTransform()
 {
     bool up, down, left, right;
     spinObject = false;
-    for(auto &f : inputTransform)
-        f = 0.0f;
+
+    for(int i = 0; i < 3; i++){
+        inputTransform[i] = 0.0f;
+    } 
+    
     if((up = glfwGetKey(window, GLFW_KEY_W)) == GLFW_PRESS)
     {
         //spin on x axis
@@ -29,20 +33,13 @@ void Controller::updateTransform()
     if((right = glfwGetKey(window, GLFW_KEY_D)) == GLFW_PRESS)
     {
         //spin on y axis
-        inputTransform[1] = 1.0f;
+        inputTransform[1] = -1.0f;
     }
     if((left = glfwGetKey(window, GLFW_KEY_A)) == GLFW_PRESS)
     {
-        inputTransform[1] = -1.0f;
+        inputTransform[1] = 1.0f;
     }
 
-    if(up && right || down && right){
-        inputTransform[2] = - 1.0f;
-    }
-    if(up && left || down && right)
-    {
-        inputTransform[2] = 1.0f;
-    }
     if( up || down || right || left)
     {
         spinObject = true;

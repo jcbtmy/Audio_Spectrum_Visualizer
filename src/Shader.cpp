@@ -85,3 +85,8 @@ Shader::Shader(const char*  vertexPath, const char* fragmentPath)
 void Shader::use(){
      glUseProgram(programID);
 }
+
+unsigned int Shader::getUniform(const char* name)
+{
+    return glGetUniformLocation(programID, name);
+}
