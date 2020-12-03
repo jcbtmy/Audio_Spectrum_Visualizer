@@ -6,7 +6,6 @@
 
 #include "Window.h"
 #include "Shader.h"
-#include "Sphere.h"
 #include "Shape.h"
 #include "Controller.h"
 #include "Camera.h"
@@ -59,26 +58,19 @@ int main(void){
     Shape shape;
     Camera camera(dims.width, dims.height);
 
-
-    //glLineWidth(1.0f);
-    //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-    // Accept fragment if it closer to the camera than the former one
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-
     camera.setUniforms(shader.getUniform("projection"), shader.getUniform("view"));
     shape.setUniform(shader.getUniform("model"));
 
+
+    shape.useWireFrame(3.0f);
     shape.load();
     shader.use();
     
     while (window.isopen())
     {
         /* Render here */
-        
         gray_screen();
         shape.setRotation(controller.getRotation(), dims.refresh_rate);
-        
         camera.update();
         shape.draw();
         controller.handleEvents();

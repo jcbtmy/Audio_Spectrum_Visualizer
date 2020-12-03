@@ -29,6 +29,7 @@ class Shape{
 
         void square(float step);
         void cube(float step);
+        void sphere(int stacks, int sectors, float radius);
         void addVertex(float, float, float);
         void addIndex(unsigned int, unsigned int, unsigned int);
         void setUniform(unsigned int);
@@ -36,6 +37,7 @@ class Shape{
         void load();
         void draw();
         void setRotation(float* input, int speed);
+        void useWireFrame(float lineWidth);
 
 };  
 

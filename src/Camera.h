@@ -19,7 +19,6 @@ class Camera {
 
         Camera(int width ,int height);
         void  setUniforms(unsigned int uniformProj, unsigned int uniformView);
-        void  setRotation(float* input, int speed);
         void  update();
 
 };
