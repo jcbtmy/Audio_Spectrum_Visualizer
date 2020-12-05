@@ -39,6 +39,9 @@ int main(void){
 
     GLFWmonitor* monitor;
     ScreenDim dims;
+    unsigned long ticks = 0;
+    unsigned int counter = 0;
+   
 
     /* Initialize the library */
     if (!glfwInit())
@@ -64,17 +67,25 @@ int main(void){
 
     shape.useWireFrame(3.0f);
     shape.load();
-    shader.use();
-    
+   
+
     while (window.isopen())
     {
         /* Render here */
         gray_screen();
+        shader.use();
+
+        if(ticks == (dims.refresh_rate / 25))
+        {
+            shape.scaleStacks(counter++, 1.2f);
+            ticks = 0;
+        }
         shape.setRotation(controller.getRotation(), dims.refresh_rate);
         camera.update();
         shape.draw();
         controller.handleEvents();
         window.swap();
+        ticks++;
 
     }
 

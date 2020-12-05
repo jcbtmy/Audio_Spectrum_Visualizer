@@ -9,11 +9,11 @@ Shape::Shape()
 
 void Shape::sphere(int stacks, int sectors, float radius)
 {
+    this->stacks = stacks;
+    this->sectors = sectors;
+    //implemented from http://www.songho.ca/opengl/gl_sphere.html
     const float PI = 3.14;
     float x,y,z, xy;
-    float nx, ny, nz, lengthInv = 1.0f / radius;
-    float s, t;
-
     float sectorStep = 2 * PI / sectors;
     float stackStep = PI / stacks;
     float sectorAngle, stackAngle;
@@ -140,7 +140,6 @@ void Shape::addIndex(unsigned int i1, unsigned int i2, unsigned int i3)
 
 void Shape::load(){
 
-    unsigned int vbo;
     unsigned int ibo;
 
     glGenBuffers(1, &vbo);
@@ -148,7 +147,7 @@ void Shape::load(){
     glBufferData(GL_ARRAY_BUFFER,
                 this->getVerticesSize(),
                 this->getVertices(),
-                GL_STATIC_DRAW);
+                GL_DYNAMIC_DRAW);
 
 
     glEnableVertexAttribArray(0);
@@ -172,6 +171,8 @@ void Shape::draw(){
 
 
     glUniformMatrix4fv(uniform, 1, GL_FALSE, glm::value_ptr(model));
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, this->getVerticesSize(), this->getVertices(), GL_DYNAMIC_DRAW);
 
     glDrawElements(GL_TRIANGLES, 
                     (unsigned int) indices.size(), 
@@ -208,4 +209,31 @@ void Shape::useWireFrame(float lineWidth)
 {
     glLineWidth( lineWidth);
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+}
+
+void Shape::scaleStacks(int time, float scaleUp)
+{
+    float scaleDown =  1.0f / scaleUp; 
+    int stack_number = (time % (stacks + 1));
+    
+    int update_location = stack_number * (sectors + 1) * 3;
+    int previous_location = (stack_number - 1) * (sectors + 1) * 3;
+
+    for(int i = 0; i <= sectors * 3; i += 3)
+    {
+        if(stack_number != 0 && stack_number != (stacks))
+        {
+            vertices[update_location + i] *= scaleUp;
+            vertices[update_location + i + 1] *= scaleUp;
+            vertices[update_location + i + 2] *= scaleUp;
+        }
+        if(stack_number > 1 )
+        {
+            vertices[previous_location + i] *= scaleDown;
+            vertices[previous_location + i + 1] *= scaleDown;
+            vertices[previous_location + i + 2] *= scaleDown;
+        }
+    }
+
+
 }

@@ -17,7 +17,9 @@ class Shape{
         std::vector<unsigned int> indices;
         glm::mat4 model;
 
+        int stacks, sectors, last_stack = 0;
         unsigned int uniform;
+        unsigned int vbo;
 
         Shape();
 
@@ -38,6 +40,7 @@ class Shape{
         void draw();
         void setRotation(float* input, int speed);
         void useWireFrame(float lineWidth);
+        void scaleStacks(int time, float scale);
 
 };  
 
