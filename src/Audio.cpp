@@ -29,7 +29,25 @@ Audio::Audio()
         std::cout << "Cannot open Codec\n";
         exit(0);
     }
+    planSet = false;
+    
+}
 
+Audio::~Audio()
+{
+
+    fftw_destroy_plan(plan);
+    fftw_free(in);
+    fftw_free(out);
+
+    fclose(file);
+    avcodec_free_context(&codecContext);    
+    av_parser_close(parser);
+    av_frame_free(&decoded_frame);
+    av_packet_free(&packet);
+
+    ao_close(outputDevice);
+    ao_shutdown();
 }
 
 void Audio::setAudioFile(const char* fileName)
@@ -101,24 +119,13 @@ void Audio::play()
     free(buffer);
 }
 
-Audio::~Audio()
-{
 
-    fclose(file);
-    avcodec_free_context(&codecContext);    
-    av_parser_close(parser);
-    av_frame_free(&decoded_frame);
-    av_packet_free(&packet);
-
-    ao_close(outputDevice);
-    ao_shutdown();
-}
 
 void Audio::decode()
 {
     int16_t *buf;
     int ret, i;
-    int size;
+    int size, N;
 
     ret = avcodec_send_packet(codecContext, packet);
 
@@ -133,9 +140,16 @@ void Audio::decode()
         if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
             return;
 
-        size = sizeof(*buf) * 2  * decoded_frame->nb_samples;
+        N = decoded_frame->nb_samples;
+        size = sizeof(*buf) * 2  * N ;
         buf = (int16_t*)av_malloc(size);
-        for (i = 0; i < decoded_frame->nb_samples; i++) {
+
+        if(!planSet)
+        {
+            this->createPlan(N);
+        }
+
+        for (i = 0; i < N; i++) {
             buf[2 * i]     = ((int16_t*)decoded_frame->data[0])[i];
             buf[2 * i + 1] = ((int16_t*)decoded_frame->data[1])[i];
         }
@@ -148,4 +162,12 @@ void Audio::decode()
 void Audio::writeToDevice(char* buf, size_t size)
 {
     ao_play(outputDevice, buf, size);
+}
+
+void Audio::createPlan(size_t alloc_size)
+{
+    in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * alloc_size);
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * alloc_size);
+    plan = fftw_plan_dft_1d(decoded_frame->nb_samples,in, out,FFTW_FORWARD, FFTW_ESTIMATE);
+    planSet = true;
 }

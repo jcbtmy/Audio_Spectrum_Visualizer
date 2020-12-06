@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <thread>
 #include <filesystem>
-
+#include <fftw3.h>
 
 extern "C"{
     #include <libavcodec/avcodec.h>
@@ -19,6 +19,10 @@ extern "C"{
 class Audio{
 
     private:
+
+        fftw_plan plan;
+        fftw_complex *in, *out;
+        bool planSet;
 
         std::thread fileDecode;
 
@@ -46,6 +50,7 @@ class Audio{
         void writeToDevice(char* buf, size_t size);
         void start();
         void stop();
+        void createPlan(size_t alloc_size);
 
         bool isPlaying;
 

@@ -4,6 +4,7 @@ project(Graphics)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+Set(CMAKE_CXX_FLAGS "-lm")
 
 
 add_executable(${PROJECT_NAME} src/main.cpp
@@ -33,6 +34,9 @@ find_library(AVFORMAT_LIBRARY avformat)
 find_path(LIBAO_INCLUDE_DIR ao/ao.h)
 find_library(LIBAO_LIBRARY ao)
 
+find_path(FFTW_INCLUDE_DIR fftw.h)
+find_library(FFTW_LIBRARY fftw)
+
 find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
@@ -42,10 +46,13 @@ find_package(glm REQUIRED)
 
 target_link_libraries(${PROJECT_NAME}  OpenGL::GL
                                        Threads::Threads
-                                       glfw 
+                                       glfw
+                                       fftw3
                                        GLEW::GLEW 
                                        ${GLM_INCLUDE_DIR} 
                                        ${AVCODEC_LIBRARY}
                                        ${AVUTIL_LIBRARY}
                                        ${AVFORMAT_LIBRARY}
-                                       ${LIBAO_LIBRARY})
+                                       ${LIBAO_LIBRARY}
+                                       ${FTTW_LIBRARY}
+                                       )
