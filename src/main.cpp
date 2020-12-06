@@ -9,6 +9,7 @@
 #include "Shape.h"
 #include "Controller.h"
 #include "Camera.h"
+#include "Audio.h"
 
 
 using namespace std;
@@ -35,12 +36,18 @@ static void gray_screen() {
 
 
 
-int main(void){
+int main(int argc, char* argv[]){
 
     GLFWmonitor* monitor;
     ScreenDim dims;
     unsigned long ticks = 0;
     unsigned int counter = 0;
+
+    if(argc < 2)
+    {
+        std::cout << "Usage: ./Graphics <mp3 file>\n";
+        exit(1);
+    }
    
 
     /* Initialize the library */
@@ -50,6 +57,7 @@ int main(void){
     /* Create a windowed mode window and its OpenGL context */
     Window window(1080, 720, "Hello World");
     Controller controller(window.getContext());
+    Audio audio;
 
     glewExperimental = GL_TRUE;
     glewInit();
@@ -63,23 +71,26 @@ int main(void){
 
     camera.setUniforms(shader.getUniform("projection"), shader.getUniform("view"));
     shape.setUniform(shader.getUniform("model"));
+    audio.setAudioFile(argv[1]);
+    audio.setAudioDevice();
 
 
     shape.useWireFrame(3.0f);
     shape.load();
-   
+
+    audio.start();
 
     while (window.isopen())
     {
         /* Render here */
         gray_screen();
         shader.use();
-
         if(ticks == (dims.refresh_rate / 25))
         {
             shape.scaleStacks(counter++, 1.2f);
             ticks = 0;
         }
+
         shape.setRotation(controller.getRotation(), dims.refresh_rate);
         camera.update();
         shape.draw();
@@ -88,6 +99,8 @@ int main(void){
         ticks++;
 
     }
+
+    audio.stop();
 
     glfwTerminate();
 
