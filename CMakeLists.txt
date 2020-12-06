@@ -30,17 +30,22 @@ find_library(AVUTIL_LIBRARY avutil)
 find_path(AVFORMAT_INCLUDE_DIR libavformat/avformat.h)
 find_library(AVFORMAT_LIBRARY avformat)
 
+find_path(LIBAO_INCLUDE_DIR ao/ao.h)
+find_library(LIBAO_LIBRARY ao)
 
+find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
 
 
-target_link_libraries(${PROJECT_NAME}  OpenGL::GL 
+target_link_libraries(${PROJECT_NAME}  OpenGL::GL
+                                       Threads::Threads
                                        glfw 
                                        GLEW::GLEW 
                                        ${GLM_INCLUDE_DIR} 
                                        ${AVCODEC_LIBRARY}
                                        ${AVUTIL_LIBRARY}
-                                       ${AVFORMAT_LIBRARY})
+                                       ${AVFORMAT_LIBRARY}
+                                       ${LIBAO_LIBRARY})

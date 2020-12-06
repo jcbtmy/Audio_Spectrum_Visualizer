@@ -9,5 +9,5 @@ uniform mat4 view;
 
 void main(){
     gl_Position = projection * view * model * vec4(vp, 1.0);
-    vertexColor = vec4(vp, 1.0);
+    vertexColor = vec4(vp ,0.0);
 }
