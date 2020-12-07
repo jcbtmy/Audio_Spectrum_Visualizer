@@ -207,13 +207,21 @@ void Audio::updateFrequencies(size_t N)
    double imag, real, magnitude;
 
    fftw_execute (plan);
-   for(int i = 0; i < N; i++)
+   
+   
+   
+    std::cout.flush();
+   for(int i = 0; i < N; i += (N / 22))
    {    
-       real = out[i][0];
-       imag  = out[i][1];
-       magnitude = sqrt((imag*imag) + (real * real));
-       //std::cout << "Maginitue: " << i << " = " << magnitude << "\n";
+        real = out[i][0];
+        imag  = out[i][1];
+        magnitude = sqrt((imag * imag)+(real * real));
+        int num  = (int)magnitude;
+        num = (num > 30) ? 30: num;
+        std::cout << std::string(num, '#') << "\n";
+        
    }
+   std::cout << '\r';
    updated = true;
    return;
 }
@@ -230,7 +238,7 @@ float Audio::applyWindow(uint16_t input, int tite, size_t N)
     }
     else if(value < -1.0)
     {
-        value = 1.0;
+        value = -1.0;
     }
 
     return value;

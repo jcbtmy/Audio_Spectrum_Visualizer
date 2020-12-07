@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string>
 #include <thread>
 #include <filesystem>
 #include <fftw3.h>
