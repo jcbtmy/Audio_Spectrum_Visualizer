@@ -1,9 +1,9 @@
 #include "Shape.h"
 
 
-Shape::Shape()
+Shape::Shape(int stack_num)
 {
-    this->sphere(18, 36, 1.0f);
+    this->sphere(stack_num, 36, 1.0f);
     model = glm::mat4(1.0f);
 }
 
@@ -36,6 +36,9 @@ void Shape::sphere(int stacks, int sectors, float radius)
             vertices.push_back(x);
             vertices.push_back(y);
             vertices.push_back(z);
+            copy.push_back(x);
+            copy.push_back(y);
+            copy.push_back(z);
         }
     }
 
@@ -211,27 +214,25 @@ void Shape::useWireFrame(float lineWidth)
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 
-void Shape::scaleStacks(int time, float scaleUp)
+void Shape::scaleStacks(int time, float* scales)
 {
-    float scaleDown =  1.0f / scaleUp; 
-    int stack_number = (time % (stacks + 1));
-    
-    int update_location = stack_number * (sectors + 1) * 3;
-    int previous_location = (stack_number - 1) * (sectors + 1) * 3;
 
-    for(int i = 0; i <= sectors * 3; i += 3)
-    {
-        if(stack_number != 0 && stack_number != (stacks))
+    if(!scales)
+        return;
+
+    int update_location;
+    float scale;
+
+    for(int stack_number = 0; stack_number < stacks; stack_number++){
+
+        update_location = stack_number * (sectors + 1) * 3;
+        scale = 1.0f + scales[stack_number];
+        for(int i = 0; i <= sectors * 3; i += 3)
         {
-            vertices[update_location + i] *= scaleUp;
-            vertices[update_location + i + 1] *= scaleUp;
-            vertices[update_location + i + 2] *= scaleUp;
-        }
-        if(stack_number > 1 )
-        {
-            vertices[previous_location + i] *= scaleDown;
-            vertices[previous_location + i + 1] *= scaleDown;
-            vertices[previous_location + i + 2] *= scaleDown;
+            vertices[update_location + i] = copy[update_location + i] * scale;
+            vertices[update_location + i + 1] = copy[update_location + i + 1] * scale;
+            vertices[update_location + i + 2] = copy[update_location + i + 2] * scale;
+
         }
     }
 

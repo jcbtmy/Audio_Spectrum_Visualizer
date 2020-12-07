@@ -11,6 +11,7 @@
 #include "Camera.h"
 #include "Audio.h"
 
+#define STACKS 32
 
 using namespace std;
 
@@ -66,7 +67,7 @@ int main(int argc, char* argv[]){
     get_resolution(&(dims.width), &(dims.height), &(dims.refresh_rate));
 
     Shader shader("./shaders/vertex_shader.glsl", "./shaders/fragment_shader.glsl");
-    Shape shape;
+    Shape shape(STACKS);
     Camera camera(dims.width, dims.height);
 
     camera.setUniforms(shader.getUniform("projection"), shader.getUniform("view"));
@@ -77,7 +78,7 @@ int main(int argc, char* argv[]){
 
     shape.useWireFrame(3.0f);
     shape.load();
-
+    audio.setBinSize(STACKS);
     audio.start();
 
     while (window.isopen())
@@ -85,18 +86,12 @@ int main(int argc, char* argv[]){
         /* Render here */
         gray_screen();
         shader.use();
-        if(ticks == (dims.refresh_rate / 25))
-        {
-            shape.scaleStacks(counter++, 1.2f);
-            ticks = 0;
-        }
-
+        shape.scaleStacks(counter++, audio.getFrequencies());
         shape.setRotation(controller.getRotation(), dims.refresh_rate);
         camera.update();
         shape.draw();
         controller.handleEvents();
         window.swap();
-        ticks++;
 
     }
 

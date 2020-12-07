@@ -36,6 +36,7 @@ Audio::Audio()
 Audio::~Audio()
 {
 
+    delete[] frequencies;
     fftw_destroy_plan(plan);
     fftw_free(in);
     fftw_free(out);
@@ -112,6 +113,7 @@ void Audio::play()
 
     if((size = fread(data, 1, f_size, file)) < 0){
         isPlaying = false;
+        free(buffer);
         return;
     }
     
@@ -192,7 +194,7 @@ void Audio::createPlan(size_t alloc_size)
 }
 
 
-double* Audio::getFrequencies()
+float* Audio::getFrequencies()
 {
     if(updated)
     {
@@ -205,23 +207,20 @@ double* Audio::getFrequencies()
 void Audio::updateFrequencies(size_t N)
 {
    double imag, real, magnitude;
+   int step = (int)ceil(((float)N/ (float)bin_size)) ;
 
    fftw_execute (plan);
    
-   
-   
-    std::cout.flush();
-   for(int i = 0; i < N; i += (N / 22))
+
+   for(int i = 0, k = 0; i < N; i += step, k++)
    {    
         real = out[i][0];
         imag  = out[i][1];
         magnitude = sqrt((imag * imag)+(real * real));
-        int num  = (int)magnitude;
-        num = (num > 30) ? 30: num;
-        std::cout << std::string(num, '#') << "\n";
-        
+        frequencies[k] = (magnitude > 50) ? 0.0f :  (float)(magnitude)/50.f;
+             
    }
-   std::cout << '\r';
+
    updated = true;
    return;
 }
@@ -242,4 +241,10 @@ float Audio::applyWindow(uint16_t input, int tite, size_t N)
     }
 
     return value;
+}
+
+void Audio::setBinSize(int size)
+{
+    bin_size = size;
+    frequencies = new float[size];
 }

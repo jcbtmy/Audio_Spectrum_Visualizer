@@ -21,7 +21,9 @@ class Audio{
 
     private:
 
-        double *frequencies;
+        int bin_size;
+
+        float *frequencies;
         bool updated;
 
         fftw_plan plan;
@@ -49,6 +51,7 @@ class Audio{
         ~Audio();
         void setAudioFile(const char* fileName);
         void setAudioDevice();
+        void setBinSize(int size);
         void playFrame();
         void decode();
         void play();
@@ -57,8 +60,9 @@ class Audio{
         void stop();
         void createPlan(size_t alloc_size);
         void updateFrequencies(size_t N);
-        double* getFrequencies();
+        float* getFrequencies();
         float applyWindow(uint16_t input, int tite, size_t N);
+
 
         bool isPlaying;
 

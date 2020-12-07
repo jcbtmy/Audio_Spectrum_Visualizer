@@ -2,6 +2,7 @@
 #define SHAPE_H
 
 #include <vector>
+#include <iostream>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,6 +15,7 @@ class Shape{
 
     public:
         std::vector<float> vertices;
+        std::vector<float> copy;
         std::vector<unsigned int> indices;
         glm::mat4 model;
 
@@ -21,7 +23,7 @@ class Shape{
         unsigned int uniform;
         unsigned int vbo;
 
-        Shape();
+        Shape(int stack_num);
 
         float*        getVertices() {return vertices.data();}
         unsigned int  getVerticesSize(){return (unsigned int)vertices.size() * sizeof(float);}
@@ -40,7 +42,7 @@ class Shape{
         void draw();
         void setRotation(float* input, int speed);
         void useWireFrame(float lineWidth);
-        void scaleStacks(int time, float scale);
+        void scaleStacks(int time, float* scales);
 
 };  
 
