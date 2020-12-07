@@ -20,11 +20,15 @@ class Audio{
 
     private:
 
+        double *frequencies;
+        bool updated;
+
         fftw_plan plan;
         fftw_complex *in, *out;
         bool planSet;
 
         std::thread fileDecode;
+        std::thread fftwExec;
 
         FILE* file;
         size_t f_size;
@@ -51,6 +55,9 @@ class Audio{
         void start();
         void stop();
         void createPlan(size_t alloc_size);
+        void updateFrequencies(size_t N);
+        double* getFrequencies();
+        float applyWindow(uint16_t input, int tite, size_t N);
 
         bool isPlaying;
 
