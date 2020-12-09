@@ -12,7 +12,7 @@ written in C++. This program takes in an audio file and computes the Discrete Fo
 	./Graphics <audio file>
 
 ## Example 
-	<img src="Example.png"><img>
+	![example image](Example.png)
 
 ## Library Dependencies
 	* libav
