@@ -139,7 +139,7 @@ void Audio::decode()
     const int IMAG = 1;
     int16_t *buf;
     int ret, i;
-    int size, N;
+    int size, N = 0;
 
     ret = avcodec_send_packet(codecContext, packet);
 
@@ -153,6 +153,7 @@ void Audio::decode()
         ret = avcodec_receive_frame(codecContext, decoded_frame);
         if(ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
             return;
+
 
         N = decoded_frame->nb_samples;
         size = sizeof(*buf) * 2  * N ;
@@ -173,7 +174,6 @@ void Audio::decode()
             buf[2 * i]     = ((int16_t*)decoded_frame->data[0])[i];
             buf[2 * i + 1] = ((int16_t*)decoded_frame->data[1])[i];
         }
-
         this->updateFrequencies(N);
         this->writeToDevice((char*)&buf[0], size);
         av_freep(&buf);
@@ -206,19 +206,30 @@ float* Audio::getFrequencies()
 
 void Audio::updateFrequencies(size_t N)
 {
-   double imag, real, magnitude;
-   int step = (int)ceil(((float)N/ (float)bin_size)) ;
+
+   if(N == 0)
+        return;
+
+   double imag, real, magnitude, max = 0.0;
+   int step = (int)ceil(((float)(N /2 )/ (float)bin_size));
 
    fftw_execute (plan);
    
 
-   for(int i = 0, k = 0; i < N; i += step, k++)
+   for(int i = 0, k = 0; i < (N / 2); i++)
    {    
         real = out[i][0];
         imag  = out[i][1];
         magnitude = sqrt((imag * imag)+(real * real));
-        frequencies[k] = (magnitude > 50) ? 0.0f :  (float)(magnitude)/50.f;
-             
+        max = (magnitude > max) ? magnitude : max;
+        
+        if(i != 0 && i % step == 0 )
+        {
+            frequencies[k] = (max > 50.0f) ? 1.0f : (float)(max)/50.0f;
+            k++;
+            max = 0.0;
+        }
+        
    }
 
    updated = true;

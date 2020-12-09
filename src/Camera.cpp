@@ -3,10 +3,10 @@
 
 Camera::Camera(int width , int height)
 {
-    projection = glm::perspective(glm::radians(45.0f),(float) width / (float) height, 0.1f, 100.0f );
+    projection = glm::perspective(glm::radians(60.0f),(float) width / (float) height, 0.1f, 100.0f );
     
     view = glm::lookAt(
-        glm::vec3(3,3,3),
+        glm::vec3(3,3,0),
         glm::vec3(0,0,0),
         glm::vec3(0, 1, 0)
     );

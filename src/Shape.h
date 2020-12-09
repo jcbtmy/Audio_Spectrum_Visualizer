@@ -42,7 +42,7 @@ class Shape{
         void draw();
         void setRotation(float* input, int speed);
         void useWireFrame(float lineWidth);
-        void scaleStacks(int time, float* scales);
+        void scaleStacks(float* scales);
 
 };  
 

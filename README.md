@@ -1,4 +1,9 @@
 # Audio_Spectrum_Visualizer
 OpenGL and FFTW Audio Spectrum Visualizer
 
-In Progress!
+## Library Dependencies
+	* libav
+	* libao
+	* fftw
+	* OpenGL
+	* glfw

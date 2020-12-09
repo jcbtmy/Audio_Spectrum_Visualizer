@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <vector>
+#include <algorithm>
+#include <iterator>
 
 #include "Window.h"
 #include "Shader.h"
@@ -11,7 +13,7 @@
 #include "Camera.h"
 #include "Audio.h"
 
-#define STACKS 32
+#define STACKS 24
 
 using namespace std;
 
@@ -41,8 +43,6 @@ int main(int argc, char* argv[]){
 
     GLFWmonitor* monitor;
     ScreenDim dims;
-    unsigned long ticks = 0;
-    unsigned int counter = 0;
 
     if(argc < 2)
     {
@@ -86,7 +86,9 @@ int main(int argc, char* argv[]){
         /* Render here */
         gray_screen();
         shader.use();
-        shape.scaleStacks(counter++, audio.getFrequencies());
+        
+       
+        shape.scaleStacks(audio.getFrequencies());
         shape.setRotation(controller.getRotation(), dims.refresh_rate);
         camera.update();
         shape.draw();

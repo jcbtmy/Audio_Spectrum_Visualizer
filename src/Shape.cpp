@@ -214,7 +214,7 @@ void Shape::useWireFrame(float lineWidth)
     glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 }
 
-void Shape::scaleStacks(int time, float* scales)
+void Shape::scaleStacks( float* scales)
 {
 
     if(!scales)
@@ -226,7 +226,7 @@ void Shape::scaleStacks(int time, float* scales)
     for(int stack_number = 0; stack_number < stacks; stack_number++){
 
         update_location = stack_number * (sectors + 1) * 3;
-        scale = 1.0f + scales[stack_number];
+        scale = 1.0f + (1.2f* sin((stack_number * M_PI)/(stacks + 2)) * (scales[stack_number]));
         for(int i = 0; i <= sectors * 3; i += 3)
         {
             vertices[update_location + i] = copy[update_location + i] * scale;
