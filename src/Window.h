@@ -14,6 +14,7 @@ class Window{
         bool last_key;
 
         Window(int width, int height, const char*);
+        ~Window();
 
         GLFWwindow* getContext() {return window;}
         int isopen();

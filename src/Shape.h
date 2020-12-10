@@ -22,8 +22,10 @@ class Shape{
         int stacks, sectors, last_stack = 0;
         unsigned int uniform;
         unsigned int vbo;
+        unsigned int ibo;
 
         Shape(int stack_num);
+        ~Shape();
 
         float*        getVertices() {return vertices.data();}
         unsigned int  getVerticesSize(){return (unsigned int)vertices.size() * sizeof(float);}

@@ -11,9 +11,6 @@ written in C++. This program takes in an audio file and computes the Discrete Fo
 ### run 
 	./Graphics <audio file>
 
-## Example 
-	![example image](Example.png)
-
 ## Library Dependencies
 	* libav
 	* libao

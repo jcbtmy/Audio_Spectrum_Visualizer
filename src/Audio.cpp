@@ -3,6 +3,7 @@
 
 Audio::Audio()
 {
+    //allocate packets, framse, find decoders, etc
     packet = av_packet_alloc();
     decoded_frame = av_frame_alloc();
 
@@ -35,7 +36,7 @@ Audio::Audio()
 
 Audio::~Audio()
 {
-
+    //cleanup
     delete[] frequencies;
     fftw_destroy_plan(plan);
     fftw_free(in);
@@ -54,7 +55,7 @@ Audio::~Audio()
 void Audio::setAudioFile(const char* fileName)
 {
 
-    f_size = std::filesystem::file_size(fileName);
+    //check if audio file is there, if so, how big is it
 
     file = fopen(fileName, "rb");
     if(!file)
@@ -78,6 +79,7 @@ void Audio::setAudioFile(const char* fileName)
 
 void Audio::setAudioDevice()
 {
+    //setup output device format and 
     outputFormat.bits = 16;
     outputFormat.channels = 2;
     outputFormat.rate= 44100;

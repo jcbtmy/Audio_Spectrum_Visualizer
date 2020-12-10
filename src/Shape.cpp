@@ -7,6 +7,12 @@ Shape::Shape(int stack_num)
     model = glm::mat4(1.0f);
 }
 
+Shape::~Shape()
+{
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ibo);
+}
+
 void Shape::sphere(int stacks, int sectors, float radius)
 {
     this->stacks = stacks;
@@ -142,8 +148,6 @@ void Shape::addIndex(unsigned int i1, unsigned int i2, unsigned int i3)
 }
 
 void Shape::load(){
-
-    unsigned int ibo;
 
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);

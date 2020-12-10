@@ -21,6 +21,11 @@ Window::Window(int width, int height, const char* title)
     glfwMakeContextCurrent(window);
 }
 
+Window::~Window()
+{
+    glfwDestroyWindow(window);
+}
+
 int Window::isopen(){
 
     return !glfwWindowShouldClose(window);
